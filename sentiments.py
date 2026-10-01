@@ -13,7 +13,7 @@ def classify_structural(text):
                          'technological, automation, and/or economic restructuring']
     result = classifier(the_text, candidate_labels, multi_label = True,
                         hypothesis_template = "This text discusses {}.")
-    return dict(zip(result['labels'], result['scores']))
+    return result
 
 def classify_essential(text):
     the_text = text
@@ -22,21 +22,47 @@ def classify_essential(text):
                          'how households or ordinary consumers are affected']
     result = classifier(the_text, candidate_labels, multi_label = True,
                         hypothesis_template = "This text discusses {}.")
-    return dict(zip(result['labels'], result['scores']))
+    return result
 
 def classify():
     text_data = df['lead_text'].dropna().tolist()
     text = input("Structural or essential? ")
+    type = input("Paste or read from Excel? ")
+    if(not (type.lower().strip() == 'paste' or type.lower().strip() == 'excel')):
+         print("Invalid method. Please enter 'paste' or 'Excel'.")
+         classify()
+         return
+    dictionary = {}
     if text.lower().strip() == "structural":
-        for text in text_data:
-            result = classify_structural(text)
-            print(result)
+            if(type.lower().strip() == 'paste'):
+                mytext =input("text: ")
+                result = classify_structural(mytext)
+                dictionary[text] = result
+                dictionary[text]['relevant'] = all(prob > 0.5 for prob in dictionary[text]['scores'])
+                print(dictionary[text]['relevant'])
+            else:
+                for text in text_data:
+                    result = classify_structural(text)
+                    dictionary[text] = result
+                    dictionary[text]['relevant'] = all(prob > 0.5 for prob in dictionary[text]['scores'])
+                    print(dictionary[text]['relevant'])
     elif text.lower().strip() == "essential":
-        for text in text_data:
-            result = classify_essential(text)
-            print(result)
+        if(type.lower().strip() == 'paste'):
+                mytext =input("text: ")
+                result = classify_essential(mytext)
+                dictionary[text] = result
+                dictionary[text]['relevant'] = all(prob > 0.5 for prob in dictionary[text]['scores'])
+                print(dictionary[text]['relevant'])
+        else:
+            for text in text_data:
+                result = classify_essential(text)
+                dictionary[text] = result
+                dictionary[text]['relevant'] = all(prob > 0.5 for prob in dictionary[text]['scores'])
+                print(dictionary[text]['relevant'])
     else:
         print("Invalid input. Please enter 'structural' or 'essential'.")
+        classify()
+        return
 
 classify()
     
