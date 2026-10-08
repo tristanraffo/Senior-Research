@@ -4,7 +4,6 @@ import sklearn as skl, en_core_web_trf as en_core_web_trf, nltk as nltk
 from transformers import pipeline
 
 classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
-df = pd.read_excel(input("What is the name of your Excel file (with extension)? "))
 
 def classify_structural(text):
     the_text = text
@@ -16,7 +15,6 @@ def classify_structural(text):
     return result
 
 def classify():
-    text_data = df['lead_text'].dropna().tolist()
     type = input("Paste or read from Excel? ")
     if(not (type.lower().strip() == 'paste' or type.lower().strip() == 'excel' or type.lower().strip() == 'read')):
          print("Invalid method. Please enter 'paste' or 'Excel'.")
@@ -30,6 +28,8 @@ def classify():
         dictionary[mytext]['relevant'] = all(prob > 0.5 for prob in dictionary[mytext]['scores'])
         print(dictionary[mytext]['relevant'])
     else:
+        df = pd.read_excel(input("What is the name of your Excel file (with extension)? "))
+        text_data = df['lead_text'].dropna().tolist()
         for text in text_data:
             result = classify_structural(text)
             dictionary[text] = result
