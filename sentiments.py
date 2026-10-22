@@ -20,21 +20,38 @@ def classify():
          print("Invalid method. Please enter 'paste' or 'Excel'.")
          classify()
          return
+    output = input("Print results in Terminal or Excel? ")
+    if(not (output.lower().strip() == 'terminal' or output.lower().strip() == 'excel')):
+         print("Invalid method. Please enter 'terminal' or 'Excel'.")
+         classify()
+         return
+    if(output.lower().strip() == 'excel'):
+        outputname = input("Name of your output Excel file (with extension)? ")
     dictionary = {}
     if(type.lower().strip() == 'paste'):
         mytext =input("text: ")
         result = classify_structural(mytext)
         dictionary[mytext] = result
+        if(output.lower().strip() == 'excel'):
+            df = pd.DataFrame.from_dict(dictionary, orient='index')
+            df.to_excel(outputname)
+            return
+        print(dictionary[mytext]['scores'])
         dictionary[mytext]['relevant'] = all(prob > 0.5 for prob in dictionary[mytext]['scores'])
         print(dictionary[mytext]['relevant'])
     else:
-        df = pd.read_excel(input("What is the name of your Excel file (with extension)? "))
+        df = pd.read_excel(input("Name of your input Excel file (with extension)? "))
         text_data = df['lead_text'].dropna().tolist()
         for text in text_data:
             result = classify_structural(text)
             dictionary[text] = result
-            dictionary[text]['relevant'] = all(prob > 0.5 for prob in dictionary[text]['scores'])
-            print(dictionary[text]['relevant'])
+            if(output.lower().strip() == 'excel'):
+                df = pd.DataFrame.from_dict(dictionary, orient='index')
+                df.to_excel(outputname)
+            else:
+                print(dictionary[text]['scores'])
+                dictionary[text]['relevant'] = all(prob > 0.5 for prob in dictionary[text]['scores'])
+                print(dictionary[text]['relevant'])
 
 classify()
     
