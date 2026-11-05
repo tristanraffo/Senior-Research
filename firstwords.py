@@ -22,10 +22,14 @@ def read_urls():
     urls = []
     with open(URL_FILE, "r", encoding="utf-8") as file:
         for line in file:
-            url = line.strip()
-            if url != "" and not url.startswith("#"):
-                if url not in urls:
-                    urls.append(url)
+            line = line.strip()
+            if line != "" and not line.startswith("#"):
+                if line not in urls:
+                    if " - " in line:
+                        url, relevance = line.split(" - ", 1)
+                        urls.append((url.strip(), relevance.strip()))
+                    else:
+                        urls.append((line, ""))
     return urls
 
 
@@ -49,7 +53,7 @@ def scrape_article(url):
             publication = article_metadata.sitename
     return headline, date, publication, text
 
-def process_article(text, headline, date, publication, article_id):
+def process_article(text, headline, date, publication, relevance, article_id):
     words = text.split()
     if not words:
         print("Nothing to process.")
@@ -68,6 +72,7 @@ def process_article(text, headline, date, publication, article_id):
         "date": date,
         "publication": publication,
         "headline": headline,
+        "relevance": relevance,
         "body": result,
         "lead_text": headline + ": " + result
     }
@@ -105,14 +110,13 @@ if input_choice == "1":
             print("\nResults printed above!")
 elif input_choice == "2":
     urls = read_urls()
-    for i in range(len(urls)):
-        url = urls[i]
+    for i, (url, relevance) in enumerate(urls):
         print("\nScraping article", i + 1, "of", len(urls))
         try:
             headline, date, publication, text = scrape_article(url)
             article_id = str(i + 1)
             article = process_article(
-                text, headline, date, publication, article_id
+                text, headline, date, publication, relevance, article_id
             )
             if article is not None:
                 articles.append(article)
@@ -125,7 +129,7 @@ else:
 if output_choice == "2":
     if articles:
         df = pd.DataFrame(articles)
-        df = df[["article_id","date","publication","headline","body","lead_text"]]
+        df = df[["article_id","date","publication","headline","relevance","body","lead_text"]]
         df.to_excel(OUTPUT_FILE, index=False)
         print("\nSaved", len(articles), "articles to", OUTPUT_FILE)
     else:

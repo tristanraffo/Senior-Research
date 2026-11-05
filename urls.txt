@@ -1,1 +1,7 @@
-https://www.cbsnews.com/news/recession-claims-thousands-more-jobs/
+https://www.cbsnews.com/news/recession-claims-thousands-more-jobs/ - DECOY
+https://www.pewresearch.org/global/2026/09/17/globally-more-people-expect-ai-to-cause-job-loss-than-growth/ - RELEVANT
+https://www.foxnews.com/politics/watch-americans-warn-ai-job-loss-inevitable-despite-rosy-new-reports-just-wait - RELEVANT
+https://www.pewresearch.org/short-reads/2026/08/18/young-adults-in-the-us-are-increasingly-wary-of-ai-concerned-it-will-take-jobs/ - RELEVANT
+https://www.cnbc.com/2026/11/03/google-responds-to-outrage-over-removing-search-in-schools-that-ban-ai.html - IRRELEVANT
+https://finance.yahoo.com/technology/ai/articles/cipher-mining-sinks-17-texas-134134061.html - DECOY
+
