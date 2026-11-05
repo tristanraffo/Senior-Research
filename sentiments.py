@@ -42,9 +42,17 @@ def classify():
     else:
         df = pd.read_excel(input("Name of your input Excel file (with extension)? "))
         text_data = df['lead_text'].dropna().tolist()
+        relevance = df['relevance'].dropna().tolist()
+        i = 0
         for text in text_data:
             result = classify_structural(text)
             dictionary[text] = result
+            dictionary[text]['relevant'] = all(prob > 0.5 for prob in dictionary[text]['scores'])
+            dictionary[text]['relevance'] = relevance[i]
+            if(dictionary[text]['relevance'].lower().strip() == 'relevant'):
+                dictionary[text]['accurate'] = (dictionary[text]['relevant'] == True)
+            else:
+                dictionary[text]['accurate'] = (dictionary[text]['relevant'] == False)
             if(output.lower().strip() == 'excel'):
                 df = pd.DataFrame.from_dict(dictionary, orient='index')
                 df.to_excel(outputname)
@@ -52,6 +60,7 @@ def classify():
                 print(dictionary[text]['scores'])
                 dictionary[text]['relevant'] = all(prob > 0.5 for prob in dictionary[text]['scores'])
                 print(dictionary[text]['relevant'])
+            i += 1
 
 classify()
     
