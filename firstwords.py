@@ -4,8 +4,6 @@ import trafilatura
 from trafilatura import metadata
 
 N_WORDS = 200
-
-URL_FILE = "urls.txt"
 OUTPUT_FILE = "scraped.xlsx"
 
 def read_pasted():
@@ -82,6 +80,8 @@ print("Choose input method:")
 print("1. Paste article text into the terminal")
 print("2. Scrape articles from urls.txt")
 input_choice = input("Enter 1 or 2: ")
+if(input_choice.strip() == "2"):
+    URL_FILE = input("Enter the name of the urls.txt file (with extension): ")
 print("\nChoose output method:")
 print("1. Print results to the terminal")
 print("2. Write results to Excel")
